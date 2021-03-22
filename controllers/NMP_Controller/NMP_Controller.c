@@ -122,14 +122,20 @@ int main(int argc, char **argv) {
     wb_motor_set_velocity(lmotor, 10);
     wb_motor_set_velocity(rmotor, 10);
     
-    
     /*
-    int ChckCorn()
+    int a = ChckCorn()
     - returns 0 for intersection
       returns 1 for left
       returns 2 for right
     */
     
+    if (a == 0) {
+		//do nothing	
+	} else if (a == 1) {
+		//turn left
+	} else {
+		//turn right
+	}
     /*
     void Turn() (if ChckCorn returns something)
     - Turn() turns left or right depending on ChckCorn()
@@ -141,7 +147,7 @@ int main(int argc, char **argv) {
 
     // Enter here functions to send actuator commands, like:
     //  motor->setPosition(10.0);
-  };
+   };
 
   // Enter here exit cleanup code.
 
@@ -150,3 +156,25 @@ int main(int argc, char **argv) {
 }
 
 
+/*void turn_left(){
+    
+
+
+}*/
+
+void turn_right(){
+    /*
+    save leftfrontLeftDs distance value in variable (double a)
+    while loop straight (exit when a != leftfrontLeftDs)
+    save leftfrontLeftDs distance value in variable (double b)
+    while loop turn (exit leftfrontLeftDs < b) {
+        (small n)
+		save leftfrontLeftDs distance value in variable (double b)
+        left motor velocity to negative n 
+		right motor velocity to positive n
+			
+    } 
+    while loop straight 
+    */
+  
+}
