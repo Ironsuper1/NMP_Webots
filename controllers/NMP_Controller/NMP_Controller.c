@@ -24,7 +24,6 @@
 #define TURN_RIGHT 2
 #define DISTANCE_RANGE 50
 #define DRASTIC 200
-
 // This is the main program of your controller.
 // It creates an instance of your Robot instance, launches its
 // function(s) and destroys it at the end of the execution.
@@ -123,9 +122,10 @@ int main(int argc, char **argv) {
   
 
   int fastVel = 10;
-  int slowVel = 5;
-  double leftVel = 10;
-  double rightVel = 10;
+  int leftVel = 10;
+  int rightVel = 10;
+  
+      printf("BRUH");
   
   // Main loop:
   // - perform simulation steps until Webots is stopping the controller
@@ -155,14 +155,27 @@ int main(int argc, char **argv) {
     double currDist11 = wb_distance_sensor_get_value(frontLeftDs);
     double currDist1 = wb_distance_sensor_get_value(frontRightDs);
     
-    if (currDist9 + currDist10 + currDist11 > currDist1 + currDist2 + currDist3) {
+    double ratio = 0;
+    bool turn;
+    
+    if ((currDist9 + currDist10 + currDist11) - (currDist1 + currDist2 + currDist3) > 0) {
+      ratio = ((currDist1 + currDist2 + currDist3) / (currDist9 + currDist10 + currDist11));
       leftVel = fastVel;
-      rightVel = slowVel;
+      turn = TURN_RIGHT;
+      rightVel = ratio * 10.2;
     } else {
-      leftVel = slowVel;
+      ratio = ((currDist9 + currDist10 + currDist11) / (currDist1 + currDist2 + currDist3));
+      turn = TURN_LEFT;
+      leftVel = ratio * 10.2;
       rightVel = fastVel;
     }
     
+    printf("%lf, %lf\n", currDist9, currDist3);
+    
+    if (currDist9 < 100 && currDist3 < 100) {
+      leftVel = fastVel;
+      rightVel = fastVel;
+    }
     /*
     void Turn() (if ChckCorn returns something)
     - Turn() turns left or right depending on ChckCorn()
@@ -181,5 +194,4 @@ int main(int argc, char **argv) {
   wb_robot_cleanup();
   return 0;
 }
-
 
