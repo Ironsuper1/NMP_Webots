@@ -133,6 +133,31 @@ int main(int argc, char **argv) {
     // Read the sensors:
     // Enter here functions to read sensor data, like:
     //  double val = ds->getValue();
+        
+    /*
+    void Turn() (if ChckCorn returns something)
+    - Turn() turns left or right depending on ChckCorn()
+    */
+    
+    
+    //rmotor->setVelocity(10);
+     // Process sensor data here.
+
+    // Enter here functions to send actuator commands, like:
+    //  motor->setPosition(10.0);
+  };
+
+  // Enter here exit cleanup code.
+
+  wb_robot_cleanup();
+  return 0;
+}
+
+int tempfunc(){
+  while (wb_robot_step(timeStep) != -1) {
+    // Read the sensors:
+    // Enter here functions to read sensor data, like:
+    //  double val = ds->getValue();
     
     wb_motor_set_velocity(lmotor, leftVel);
     wb_motor_set_velocity(rmotor, rightVel);
@@ -202,10 +227,7 @@ int main(int argc, char **argv) {
     //  motor->setPosition(10.0);
   };
 
-  // Enter here exit cleanup code.
 
-  wb_robot_cleanup();
-  return 0;
 }
 
 
