@@ -22,7 +22,7 @@
 #define INTERSECTION 0
 #define TURN_LEFT 1
 #define TURN_RIGHT 2
-#define FAST_VEL 10
+#define MAX_VELOCITY 13
 // This is the main program of your controller.
 // It creates an instance of your Robot instance, launches its
 // function(s) and destroys it at the end of the execution.
@@ -118,8 +118,8 @@ int main(int argc, char **argv) {
   wb_motor_set_velocity(rmotor, 0);
   
 
-  int leftVel = 10;
-  int rightVel = 10;
+  int leftVel = MAX_VELOCITY;
+  int rightVel = MAX_VELOCITY;
 
   // Main loop:
   // - perform simulation steps until Webots is stopping the controller
@@ -142,7 +142,6 @@ int main(int argc, char **argv) {
     double currDist1 = wb_distance_sensor_get_value(frontRightDs);
     
     double ratio = 0;
-    bool turn;
     
     /*
     Takes the sum of the left sensors and compares it to the sum of the right sensors
@@ -151,22 +150,17 @@ int main(int argc, char **argv) {
 
     if ((currDist9 + currDist10 + currDist11) - (currDist1 + currDist2 + currDist3) > 0) {
       ratio = ((currDist1 + currDist2 + currDist3) / (currDist9 + currDist10 + currDist11));
-      turn = TURN_RIGHT;
-      leftVel = FAST_VEL;
-      rightVel = ratio * 10.2;
+      leftVel = MAX_VELOCITY;
+      rightVel = ratio * MAX_VELOCITY - (currDist9 + currDist10 + currDist11)/1000 - (currDist1 + currDist2 + currDist3)/1000;
     } else {
       ratio = ((currDist9 + currDist10 + currDist11) / (currDist1 + currDist2 + currDist3));
-      turn = TURN_LEFT;
-      rightVel = FAST_VEL;
-      leftVel = ratio * 10.2;
+      rightVel = MAX_VELOCITY;
+      leftVel = ratio * MAX_VELOCITY - (currDist9 + currDist10 + currDist11)/1000 - (currDist1 + currDist2 + currDist3)/1000;
     }
     
-    // Logging purposes
-    printf("%lf, %lf\n", leftVel, rightVel);
-    
     if (currDist9 < 100 && currDist3 < 100) {
-      leftVel = FAST_VEL;
-      rightVel = FAST_VEL;
+      leftVel = MAX_VELOCITY;
+      rightVel = MAX_VELOCITY;
     }
     /*
     void Turn() (if ChckCorn returns something)
@@ -186,4 +180,3 @@ int main(int argc, char **argv) {
   wb_robot_cleanup();
   return 0;
 }
-
