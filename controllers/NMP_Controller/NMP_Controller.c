@@ -45,8 +45,6 @@ int main(int argc, char **argv) {
  
   WbDeviceTag lmotor = wb_robot_get_device("left wheel motor");
   WbDeviceTag rmotor = wb_robot_get_device("right wheel motor");
-
-  
   /*
   frontLeftDs is the left sensor closest to the front
   frontRightDs is the right sensor closest to the front
@@ -90,7 +88,6 @@ int main(int argc, char **argv) {
   // Enable the sensors, feel free to change the sampling rate
   wb_lidar_enable(lidar, 50);
   
-  
   wb_distance_sensor_enable(frontLeftDs, 1);
   
   wb_distance_sensor_enable(frontRightDs, 1);
@@ -127,7 +124,6 @@ int main(int argc, char **argv) {
     // Read the sensors:
     // Enter here functions to read sensor data, like:
     //  double val = ds->getValue();
-    
     wb_motor_set_velocity(lmotor, leftVel);
     wb_motor_set_velocity(rmotor, rightVel);
     
@@ -147,28 +143,29 @@ int main(int argc, char **argv) {
     Takes the sum of the left sensors and compares it to the sum of the right sensors
     and changes the velocity dynamically based on the ratio btetween ther
     */
-    if(currDist11 > 900){  
-      leftVel = MAX_VELOCITY;
-      rightVel = -MAX_VELOCITY;
-    }
-    else if(currDist1 > 900){
-      leftVel = -MAX_VELOCITY;
-      rightVel = MAX_VELOCITY;
-    
-    }
     if ((currDist9 + currDist10 + currDist11) - (currDist1 + currDist2 + currDist3) > 0) {
       ratio = ((currDist1 + currDist2 + currDist3) / (currDist9 + currDist10 + currDist11));
       leftVel = MAX_VELOCITY;
-      rightVel = ratio * MAX_VELOCITY - (currDist9 + currDist10 + currDist11)/1000 - (currDist1 + currDist2 + currDist3)/1000;
+      rightVel = ratio * MAX_VELOCITY;
     } else {
       ratio = ((currDist9 + currDist10 + currDist11) / (currDist1 + currDist2 + currDist3));
       rightVel = MAX_VELOCITY;
-      leftVel = ratio * MAX_VELOCITY - (currDist9 + currDist10 + currDist11)/1000 - (currDist1 + currDist2 + currDist3)/1000;
+      leftVel = ratio * MAX_VELOCITY;
     }
     
     if (currDist9 < 100 && currDist3 < 100) {
       leftVel = MAX_VELOCITY;
       rightVel = MAX_VELOCITY;
+    }
+    
+    if(currDist11 > 950 || currDist10 > 950 || currDist9 > 950){  
+      leftVel = 10;
+      rightVel = 2;
+    }
+    else if(currDist1 > 950 || currDist2 > 950 || currDist3 > 950){
+      leftVel = 2;
+      rightVel = 10;
+    
     }
     /*
     void Turn() (if ChckCorn returns something)
