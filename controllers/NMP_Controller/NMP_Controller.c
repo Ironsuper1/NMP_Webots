@@ -175,8 +175,85 @@ int main(int argc, char **argv) {
     //  motor->setPosition(10.0);
   };
 
+
   // Enter here exit cleanup code.
 
   wb_robot_cleanup();
   return 0;
+}
+
+int tempfunc(){
+  while (wb_robot_step(timeStep) != -1) {
+    // Read the sensors:
+    // Enter here functions to read sensor data, like:
+    //  double val = ds->getValue();
+    
+    wb_motor_set_velocity(lmotor, leftVel);
+    wb_motor_set_velocity(rmotor, rightVel);
+    
+    /*
+    int ChckCorn()
+      leftDseadfs
+      rightDs
+      wb_distance_sensor_get_value(wbdevicetag)
+    - returns 0 for intersection
+      returns 1 for left
+      returns 2 for rightmk
+    */
+    
+    int currDist9 = wb_distance_sensor_get_value(leftDs);
+    int currDist3 = wb_distance_sensor_get_value(rightDs);
+    int currDist10 = wb_distance_sensor_get_value(leftFrontLeftDs);
+    int currDist2 = wb_distance_sensor_get_value(rightFrontRightDs);
+    int currDist11 = wb_distance_sensor_get_value(frontLeftDs);
+    int currDist1 = wb_distance_sensor_get_value(frontRightDs);
+    if(currDist9 > 500 && currDist3 > 500){
+      slowVel = 6;
+    }else{
+      slowVel = 7;
+    }
+    printf("9dist: %d\n", currDist9);
+    printf("3dist: %d\n", currDist3);
+    printf("10dist: %d\n", currDist10);
+    printf("2dist: %d\n", currDist2);
+    printf("11dist: %d\n", currDist11);
+    printf("1dist: %d\n", currDist1);
+    int delta = 60;
+    if(currDist11 > 900){  
+      leftVel = fastVel;
+      rightVel = -fastVel;
+    }
+    else if(currDist1 > 900){
+      leftVel = -fastVel;
+      rightVel = fastVel;
+    
+    }
+    else if(fabs((currDist9 + currDist10) - (currDist3 + currDist2))<delta){
+      leftVel = fastVel;
+      rightVel = fastVel;
+    }
+    
+    else if ((currDist11 + currDist9 + currDist10) > (currDist1 + currDist2 + currDist3)) {
+      leftVel = fastVel;
+      rightVel = slowVel;
+    }
+    else{
+      leftVel = slowVel;
+      rightVel = fastVel;
+    }
+    
+    /*
+    void Turn() (if ChckCorn returns something)
+    - Turn() turns left or right depending on ChckCorn()
+    */
+    
+    
+    //rmotor->setVelocity(10);
+     // Process sensor data here.
+
+    // Enter here functions to send actuator commands, like:
+    //  motor->setPosition(10.0);
+  };
+
+
 }
