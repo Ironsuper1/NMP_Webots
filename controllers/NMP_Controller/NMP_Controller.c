@@ -22,8 +22,7 @@
 #define INTERSECTION 0
 #define TURN_LEFT 1
 #define TURN_RIGHT 2
-#define DISTANCE_RANGE 50
-#define DRASTIC 200
+#define FAST_VEL 10
 // This is the main program of your controller.
 // It creates an instance of your Robot instance, launches its
 // function(s) and destroys it at the end of the execution.
@@ -31,8 +30,6 @@
 // a controller program.
 // The arguments of the main function can be specified by the
 // "controllerArgs" field of the Robot node
-
-int checkCorner(double prevDistleft, double prevDistRight, double currDistLeft, double currDistRight);
 
 int main(int argc, char **argv) {
   // create the Robot instance.
@@ -121,12 +118,9 @@ int main(int argc, char **argv) {
   wb_motor_set_velocity(rmotor, 0);
   
 
-  int fastVel = 10;
   int leftVel = 10;
   int rightVel = 10;
-  
-      printf("BRUH");
-  
+
   // Main loop:
   // - perform simulation steps until Webots is stopping the controller
   while (wb_robot_step(timeStep) != -1) {
@@ -137,17 +131,9 @@ int main(int argc, char **argv) {
     wb_motor_set_velocity(lmotor, leftVel);
     wb_motor_set_velocity(rmotor, rightVel);
     
-    
-    /*
-    int ChckCorn()
-      leftDseadfs
-      rightDs
-      wb_distance_sensor_get_value(wbdevicetag)
-    - returns 0 for intersection
-      returns 1 for left
-      returns 2 for right
-    */
-    
+    // The distance sensors are defined by their corrosponding 
+    // positions on an analog clock
+
     double currDist9 = wb_distance_sensor_get_value(leftDs);
     double currDist3 = wb_distance_sensor_get_value(rightDs);
     double currDist10 = wb_distance_sensor_get_value(leftFrontLeftDs);
@@ -158,23 +144,29 @@ int main(int argc, char **argv) {
     double ratio = 0;
     bool turn;
     
+    /*
+    Takes the sum of the left sensors and compares it to the sum of the right sensors
+    and changes the velocity dynamically based on the ratio btetween ther
+    */
+
     if ((currDist9 + currDist10 + currDist11) - (currDist1 + currDist2 + currDist3) > 0) {
       ratio = ((currDist1 + currDist2 + currDist3) / (currDist9 + currDist10 + currDist11));
-      leftVel = fastVel;
       turn = TURN_RIGHT;
+      leftVel = FAST_VEL;
       rightVel = ratio * 10.2;
     } else {
       ratio = ((currDist9 + currDist10 + currDist11) / (currDist1 + currDist2 + currDist3));
       turn = TURN_LEFT;
+      rightVel = FAST_VEL;
       leftVel = ratio * 10.2;
-      rightVel = fastVel;
     }
     
-    printf("%lf, %lf\n", currDist9, currDist3);
+    // Logging purposes
+    printf("%lf, %lf\n", leftVel, rightVel);
     
     if (currDist9 < 100 && currDist3 < 100) {
-      leftVel = fastVel;
-      rightVel = fastVel;
+      leftVel = FAST_VEL;
+      rightVel = FAST_VEL;
     }
     /*
     void Turn() (if ChckCorn returns something)
